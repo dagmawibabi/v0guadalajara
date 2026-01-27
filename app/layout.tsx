@@ -4,6 +4,8 @@ import {Geist, Geist_Mono} from 'next/font/google'
 import {Analytics} from '@vercel/analytics/next'
 import './globals.css'
 import Dither from "@/components/Dither";
+import FooterSection from "@/components/footer";
+import {HeroHeader} from "@/components/header";
 
 const _geist = Geist({subsets: ["latin"]});
 const _geistMono = Geist_Mono({subsets: ["latin"]});
@@ -52,7 +54,9 @@ export default function RootLayout({
                 waveSpeed={0.05}
             />
         </div>
+        <HeroHeader/>
         {children}
+        <FooterSection/>
         <Analytics/>
         </body>
         </html>
