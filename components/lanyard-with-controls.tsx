@@ -45,6 +45,7 @@ export default function LanyardWithControls({
   return (
     <div className="flex flex-col">
       <Lanyard
+        key={appliedName}
         position={position}
         containerClassName={containerClassName}
         userName={appliedName}
