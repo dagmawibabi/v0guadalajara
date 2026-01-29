@@ -81,7 +81,7 @@ export default function HeroSection() {
                                     asChild
                                     size="lg"
                                     variant="ghost"
-                                    className="px-5 text-base">
+                                    className="px-5 text-base bg-black/30 backdrop-blur-sm hover:bg-black/40">
                                     <Link href="#link">
                                         <span className="text-nowrap">Contact Host</span>
                                     </Link>
