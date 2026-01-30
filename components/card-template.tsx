@@ -15,14 +15,14 @@ const CANVAS_SIZE = 512;
 
 const CardTemplate = forwardRef<CardTemplateRef, CardTemplateProps>(
   ({ userName, onTextureReady }, ref) => {
-    const [iconImage, setIconImage] = useState<HTMLImageElement | null>(null);
+    const [baseImage, setBaseImage] = useState<HTMLImageElement | null>(null);
 
-    // Preload the icon image
+    // Preload the base card image
     useEffect(() => {
       const img = new Image();
       img.crossOrigin = "anonymous";
-      img.onload = () => setIconImage(img);
-      img.src = "/icon.svg";
+      img.onload = () => setBaseImage(img);
+      img.src = "/card-base.png";
     }, []);
 
     const captureTexture = async () => {
@@ -33,28 +33,25 @@ const CardTemplate = forwardRef<CardTemplateRef, CardTemplateProps>(
       
       if (!ctx) return;
 
-      // Background - black
-      ctx.fillStyle = "#000000";
-      ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-
-      // Draw icon in center
-      if (iconImage) {
-        const iconSize = 128;
-        const iconX = (CANVAS_SIZE - iconSize) / 2;
-        const iconY = (CANVAS_SIZE - iconSize) / 2 - 40; // Slightly above center
-        ctx.drawImage(iconImage, iconX, iconY, iconSize, iconSize);
+      // Draw base card image (fills entire canvas)
+      if (baseImage) {
+        ctx.drawImage(baseImage, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+      } else {
+        // Fallback black background if image not loaded
+        ctx.fillStyle = "#000000";
+        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
       }
 
-      // Draw user name at bottom
+      // Draw user name at the bottom left area (below the geometric pattern)
       const displayName = userName || "YOUR NAME";
       ctx.fillStyle = "#ffffff";
-      ctx.font = 'bold 28px "Geist Mono", monospace';
-      ctx.textAlign = "center";
+      ctx.font = 'bold 24px "Geist Mono", monospace';
+      ctx.textAlign = "left";
       ctx.textBaseline = "middle";
-      ctx.letterSpacing = "4px";
       
-      const textY = CANVAS_SIZE - 80;
-      ctx.fillText(displayName.toUpperCase(), CANVAS_SIZE / 2, textY);
+      const textX = 40;
+      const textY = CANVAS_SIZE - 60;
+      ctx.fillText(displayName.toUpperCase(), textX, textY);
 
       const dataUrl = canvas.toDataURL("image/png");
       onTextureReady(dataUrl);
