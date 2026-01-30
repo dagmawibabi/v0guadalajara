@@ -28,6 +28,7 @@ export default function LanyardWithControls({
   const [inputValue, setInputValue] = useState(defaultName);
   const [appliedName, setAppliedName] = useState(defaultName);
   const [cardVariant, setCardVariant] = useState<CardVariant>("dark");
+  const [appliedVariant, setAppliedVariant] = useState<CardVariant>("dark");
   const [cardTextureUrl, setCardTextureUrl] = useState<string | undefined>(undefined);
   const [textureKey, setTextureKey] = useState(0);
   const cardTemplateRef = useRef<CardTemplateRef>(null);
@@ -37,7 +38,7 @@ export default function LanyardWithControls({
   const characterCount = inputValue.length;
   const isAtLimit = characterCount >= MAX_CHARACTERS;
   const isNearLimit = characterCount >= MAX_CHARACTERS - 5;
-  const hasChanges = inputValue !== appliedName;
+  const hasChanges = inputValue !== appliedName || cardVariant !== appliedVariant;
 
   const handleTextureReady = useCallback((dataUrl: string) => {
     setCardTextureUrl(dataUrl);
@@ -50,6 +51,7 @@ export default function LanyardWithControls({
 
   const handleApplyName = async () => {
     setAppliedName(inputValue);
+    setAppliedVariant(cardVariant);
     // Capture the card template as a texture
     await cardTemplateRef.current?.captureTexture();
   };
