@@ -128,8 +128,28 @@ function Band({maxSpeed = 50, minSpeed = 0, isMobile = false, cardTextureUrl}: B
     const {nodes, materials} = useGLTF(cardGLB) as any;
     const texture = useTexture(typeof lanyard === 'string' ? lanyard : lanyard.src) as THREE.Texture;
     
-    // Load custom card texture if provided
-    const customCardTexture = useTexture(cardTextureUrl || '') as THREE.Texture | undefined;
+    // Load custom card texture if provided - use state to handle async loading
+    const [customCardTexture, setCustomCardTexture] = useState<THREE.Texture | null>(null);
+    
+    useEffect(() => {
+        if (!cardTextureUrl) {
+            setCustomCardTexture(null);
+            return;
+        }
+        
+        const loader = new THREE.TextureLoader();
+        loader.load(cardTextureUrl, (loadedTexture) => {
+            loadedTexture.flipY = false;
+            loadedTexture.colorSpace = THREE.SRGBColorSpace;
+            setCustomCardTexture(loadedTexture);
+        });
+        
+        return () => {
+            if (customCardTexture) {
+                customCardTexture.dispose();
+            }
+        };
+    }, [cardTextureUrl]);
     const [curve] = useState(
         () =>
             new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()])
