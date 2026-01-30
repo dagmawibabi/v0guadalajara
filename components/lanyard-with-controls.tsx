@@ -9,7 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import CardTemplate, { type CardTemplateRef } from "@/components/card-template";
+import CardTemplate, { type CardTemplateRef, type CardVariant } from "@/components/card-template";
 import { Download } from "lucide-react";
 
 const MAX_CHARACTERS = 20;
@@ -27,24 +27,18 @@ export default function LanyardWithControls({
 }: LanyardWithControlsProps) {
   const [inputValue, setInputValue] = useState(defaultName);
   const [appliedName, setAppliedName] = useState(defaultName);
+  const [cardVariant, setCardVariant] = useState<CardVariant>("dark");
+  const [appliedVariant, setAppliedVariant] = useState<CardVariant>("dark");
   const [cardTextureUrl, setCardTextureUrl] = useState<string | undefined>(undefined);
   const [textureKey, setTextureKey] = useState(0);
   const cardTemplateRef = useRef<CardTemplateRef>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [exportBgImage, setExportBgImage] = useState<HTMLImageElement | null>(null);
 
-  // Preload background image for export
-  useEffect(() => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => setExportBgImage(img);
-    img.src = "/export-bg.webp";
-  }, []);
 
   const characterCount = inputValue.length;
   const isAtLimit = characterCount >= MAX_CHARACTERS;
   const isNearLimit = characterCount >= MAX_CHARACTERS - 5;
-  const hasChanges = inputValue !== appliedName;
+  const hasChanges = inputValue !== appliedName || cardVariant !== appliedVariant;
 
   const handleTextureReady = useCallback((dataUrl: string) => {
     setCardTextureUrl(dataUrl);
@@ -52,73 +46,12 @@ export default function LanyardWithControls({
   }, []);
 
   const handleExport = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    // Crop settings - adjust these to change the export area
-    const cropScale = 0.6; // Crop to 60% of the canvas (centered) - closer view
-    const cropWidth = canvas.width * cropScale;
-    const cropHeight = canvas.height * cropScale;
-    const cropX = (canvas.width - cropWidth) / 2;
-    const cropY = (canvas.height - cropHeight) / 2;
-
-    // Output resolution multiplier for higher quality export
-    const outputScale = 2; // 2x resolution for sharper image
-    const outputWidth = cropWidth * outputScale;
-    const outputHeight = cropHeight * outputScale;
-
-    // Create a new canvas for the final image
-    const exportCanvas = document.createElement("canvas");
-    exportCanvas.width = outputWidth;
-    exportCanvas.height = outputHeight;
-    const ctx = exportCanvas.getContext("2d");
-    
-    if (!ctx) return;
-
-    // Enable high-quality image scaling
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
-
-    // Draw background image first (cover the entire canvas)
-    if (exportBgImage) {
-      const bgAspect = exportBgImage.width / exportBgImage.height;
-      const canvasAspect = outputWidth / outputHeight;
-      
-      let drawWidth, drawHeight, drawX, drawY;
-      
-      if (bgAspect > canvasAspect) {
-        // Background is wider - fit height, crop width
-        drawHeight = outputHeight;
-        drawWidth = outputHeight * bgAspect;
-        drawX = (outputWidth - drawWidth) / 2;
-        drawY = 0;
-      } else {
-        // Background is taller - fit width, crop height
-        drawWidth = outputWidth;
-        drawHeight = outputWidth / bgAspect;
-        drawX = 0;
-        drawY = (outputHeight - drawHeight) / 2;
-      }
-      
-      ctx.drawImage(exportBgImage, drawX, drawY, drawWidth, drawHeight);
-    }
-
-    // Draw the cropped lanyard on top (scaled up)
-    ctx.drawImage(
-      canvas,
-      cropX, cropY, cropWidth, cropHeight, // Source rectangle
-      0, 0, outputWidth, outputHeight // Destination rectangle (scaled up)
-    );
-
-    const dataUrl = exportCanvas.toDataURL("image/png");
-    const link = document.createElement("a");
-    link.download = `lanyard-${appliedName || "card"}.png`;
-    link.href = dataUrl;
-    link.click();
+    cardTemplateRef.current?.exportCard();
   };
 
   const handleApplyName = async () => {
     setAppliedName(inputValue);
+    setAppliedVariant(cardVariant);
     // Capture the card template as a texture
     await cardTemplateRef.current?.captureTexture();
   };
@@ -142,6 +75,7 @@ export default function LanyardWithControls({
       <CardTemplate
         ref={cardTemplateRef}
         userName={inputValue}
+        variant={cardVariant}
         onTextureReady={handleTextureReady}
       />
       <Lanyard
@@ -153,12 +87,55 @@ export default function LanyardWithControls({
       />
       <div className="px-6 pb-8 lg:absolute lg:bottom-8 lg:right-6 lg:w-auto lg:px-0">
         <div className="mx-auto max-w-md lg:mx-0 lg:ml-auto">
-          <label
-            htmlFor="userName"
-            className="mb-2 block text-sm font-medium text-muted-foreground"
-          >
-            Personalize your card
-          </label>
+          <div className="mb-4 flex items-center justify-between">
+            <label className="text-sm font-medium text-muted-foreground">
+              Personalize your card
+            </label>
+            <div className="flex items-center gap-3">
+              <label className="flex cursor-pointer items-center gap-1.5">
+                <input
+                  type="radio"
+                  name="cardVariant"
+                  value="dark"
+                  checked={cardVariant === "dark"}
+                  onChange={() => setCardVariant("dark")}
+                  className="sr-only"
+                />
+                <span
+                  className={`flex h-6 w-6 items-center justify-center rounded-full border-2 bg-black transition-all ${
+                    cardVariant === "dark"
+                      ? "border-primary ring-2 ring-primary/30"
+                      : "border-border"
+                  }`}
+                >
+                  {cardVariant === "dark" && (
+                    <span className="h-2 w-2 rounded-full bg-white" />
+                  )}
+                </span>
+              </label>
+              <label className="flex cursor-pointer items-center gap-1.5">
+                <input
+                  type="radio"
+                  name="cardVariant"
+                  value="light"
+                  checked={cardVariant === "light"}
+                  onChange={() => setCardVariant("light")}
+                  className="sr-only"
+                />
+                <span
+                  className={`flex h-6 w-6 items-center justify-center rounded-full border-2 bg-white transition-all ${
+                    cardVariant === "light"
+                      ? "border-primary ring-2 ring-primary/30"
+                      : "border-border"
+                  }`}
+                >
+                  {cardVariant === "light" && (
+                    <span className="h-2 w-2 rounded-full bg-black" />
+                  )}
+                </span>
+              </label>
+            </div>
+          </div>
           <div className="flex gap-2">
             <div className="relative flex-1">
               <input
