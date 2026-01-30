@@ -96,13 +96,12 @@ export default function LanyardWithControls({
 
   // Share message templates
   const shareMessage = appliedName
-    ? `I'll be at v0 IRL Guadalajara! Check out my personalized lanyard`
+    ? `I'll be at @v0 Prompt to Production Guadalajara! Check out my personalized lanyard`
     : `Check out v0 IRL Guadalajara! Create your personalized event lanyard`;
 
   const handleShareX = useCallback(() => {
     const url = getShareableUrl();
-    const text = `${shareMessage} @v0`;
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}&url=${encodeURIComponent(url)}`;
     window.open(twitterUrl, "_blank", "noopener,noreferrer");
   }, [getShareableUrl, shareMessage]);
 
@@ -196,7 +195,7 @@ export default function LanyardWithControls({
       <div className="px-6 pb-8 lg:absolute lg:bottom-8 lg:right-6 lg:w-auto lg:px-0">
         <div className="mx-auto max-w-md lg:mx-0 lg:ml-auto">
           <div className="mb-4 flex items-center justify-between">
-            <label className="text-sm font-medium text-muted-foreground">
+            <label className="text-sm font-medium text-muted-foreground p-1 bg-background">
               Personalize your card
             </label>
             <div className="flex items-center gap-3">
@@ -303,7 +302,7 @@ export default function LanyardWithControls({
           {/* Share buttons - only visible when a name has been applied */}
           {appliedName && (
             <div className="mt-4 flex items-center gap-2">
-              <span className="text-sm font-medium text-muted-foreground">
+              <span className="text-sm font-medium text-muted-foreground p-1 bg-background">
                 Share:
               </span>
               <TooltipProvider delayDuration={200}>
@@ -313,7 +312,7 @@ export default function LanyardWithControls({
                       onClick={handleShareX}
                       variant="outline"
                       size="icon"
-                      className="shrink-0"
+                      className="shrink-0 dark:bg-background"
                     >
                       <XIcon className="h-4 w-4" />
                     </Button>
@@ -330,7 +329,7 @@ export default function LanyardWithControls({
                       onClick={handleShareLinkedIn}
                       variant="outline"
                       size="icon"
-                      className="shrink-0"
+                      className="shrink-0 dark:bg-background"
                     >
                       <LinkedInIcon className="h-4 w-4" />
                     </Button>
@@ -347,7 +346,7 @@ export default function LanyardWithControls({
                       onClick={handleCopyLink}
                       variant="outline"
                       size="icon"
-                      className="shrink-0"
+                      className="shrink-0 dark:bg-background"
                     >
                       {copied ? (
                         <Check className="h-4 w-4 text-green-500" />
