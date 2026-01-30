@@ -59,35 +59,54 @@ const CardTemplate = forwardRef<CardTemplateRef, CardTemplateProps>(
     };
 
     const exportCard = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = CANVAS_SIZE;
-      canvas.height = CANVAS_SIZE;
-      const ctx = canvas.getContext("2d");
+      const CROP_BOTTOM = 334;
+      const EXPORT_HEIGHT = CANVAS_SIZE - CROP_BOTTOM;
+
+      // First, create a full-size canvas to draw the complete card
+      const fullCanvas = document.createElement("canvas");
+      fullCanvas.width = CANVAS_SIZE;
+      fullCanvas.height = CANVAS_SIZE;
+      const fullCtx = fullCanvas.getContext("2d");
       
-      if (!ctx) return;
+      if (!fullCtx) return;
 
       // Draw base card image (fills entire canvas)
       if (baseImage) {
-        ctx.drawImage(baseImage, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        fullCtx.drawImage(baseImage, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
       } else {
         // Fallback black background if image not loaded
-        ctx.fillStyle = "#000000";
-        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        fullCtx.fillStyle = "#000000";
+        fullCtx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
       }
 
       // Draw user name at the bottom left area (below the geometric pattern)
       const displayName = userName || "YOUR NAME";
-      ctx.fillStyle = "#ffffff";
-      ctx.font = 'normal 48px "Geist Mono", monospace';
-      ctx.textAlign = "right";
-      ctx.textBaseline = "middle";
+      fullCtx.fillStyle = "#ffffff";
+      fullCtx.font = 'normal 48px "Geist Mono", monospace';
+      fullCtx.textAlign = "right";
+      fullCtx.textBaseline = "middle";
       
       const textX = (CANVAS_SIZE / 2) - 55;
       const textY = CANVAS_SIZE - 400;
-      ctx.fillText(displayName.toUpperCase(), textX, textY);
+      fullCtx.fillText(displayName.toUpperCase(), textX, textY);
+
+      // Create cropped export canvas (excludes bottom 334px)
+      const exportCanvas = document.createElement("canvas");
+      exportCanvas.width = CANVAS_SIZE;
+      exportCanvas.height = EXPORT_HEIGHT;
+      const exportCtx = exportCanvas.getContext("2d");
+
+      if (!exportCtx) return;
+
+      // Copy the top portion of the full canvas to the export canvas
+      exportCtx.drawImage(
+        fullCanvas,
+        0, 0, CANVAS_SIZE, EXPORT_HEIGHT, // Source: top portion
+        0, 0, CANVAS_SIZE, EXPORT_HEIGHT  // Destination: same size
+      );
 
       // Export at full resolution
-      const dataUrl = canvas.toDataURL("image/png", 1.0);
+      const dataUrl = exportCanvas.toDataURL("image/png", 1.0);
       const link = document.createElement("a");
       link.download = `v0-guadalajara-${userName || "card"}.png`;
       link.href = dataUrl;
