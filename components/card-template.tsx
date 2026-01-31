@@ -8,6 +8,8 @@ interface CardTemplateProps {
   userName: string;
   variant: CardVariant;
   onTextureReady: (dataUrl: string) => void;
+  city?: string;
+  date?: string;
 }
 
 export interface CardTemplateRef {
@@ -18,7 +20,7 @@ export interface CardTemplateRef {
 const CANVAS_SIZE = 1376;
 
 const CardTemplate = forwardRef<CardTemplateRef, CardTemplateProps>(
-  ({ userName, variant, onTextureReady }, ref) => {
+  ({ userName, variant, onTextureReady, city, date }, ref) => {
     const [baseImage, setBaseImage] = useState<HTMLImageElement | null>(null);
 
     const imageSrc = variant === "dark" ? "/card-base-dark.png" : "/card-base-light.png";
@@ -60,6 +62,39 @@ const CardTemplate = forwardRef<CardTemplateRef, CardTemplateProps>(
       const textY = CANVAS_SIZE - 400;
       ctx.fillText(displayName.toUpperCase(), textX, textY);
 
+      // Render city label
+      if (city) {
+        const cityRender = canvas.getContext("2d");
+
+        if (!cityRender) return;
+
+        cityRender.fillStyle = textColor;
+        cityRender.font = 'normal 48px "Geist Mono", monospace';
+        cityRender.textAlign = "right";
+        cityRender.textBaseline = "middle";
+
+        const cityTextX = (CANVAS_SIZE / 2) - 55;
+        const cityTextY = CANVAS_SIZE - 1226;
+        cityRender.fillText(city.toUpperCase(), cityTextX, cityTextY);
+      }
+
+      // Render date label
+      if (date) {
+        const dateRender = canvas.getContext("2d");
+
+        if (!dateRender) return;
+
+        dateRender.fillStyle = '#878787';
+        dateRender.font = 'normal 48px "Geist Mono", monospace';
+        dateRender.textAlign = "right";
+        dateRender.textBaseline = "middle";
+
+        const dateTextX = (CANVAS_SIZE / 2) - 55;
+        const dateTextY = CANVAS_SIZE - 1170;
+        dateRender.fillText(date.toUpperCase(), dateTextX, dateTextY);
+      }
+
+
       const dataUrl = canvas.toDataURL("image/png");
       onTextureReady(dataUrl);
     };
@@ -95,6 +130,38 @@ const CardTemplate = forwardRef<CardTemplateRef, CardTemplateProps>(
       const textX = (CANVAS_SIZE / 2) - 55;
       const textY = CANVAS_SIZE - 400;
       fullCtx.fillText(displayName.toUpperCase(), textX, textY);
+
+      // Render city label
+      if (city) {
+        const cityRender = fullCanvas.getContext("2d");
+
+        if (!cityRender) return;
+
+        cityRender.fillStyle = textColor;
+        cityRender.font = 'normal 48px "Geist Mono", monospace';
+        cityRender.textAlign = "right";
+        cityRender.textBaseline = "middle";
+
+        const cityTextX = (CANVAS_SIZE / 2) - 55;
+        const cityTextY = CANVAS_SIZE - 1226;
+        cityRender.fillText(city.toUpperCase(), cityTextX, cityTextY);
+      }
+
+      // Render date label
+      if (date) {
+        const dateRender = fullCanvas.getContext("2d");
+
+        if (!dateRender) return;
+
+        dateRender.fillStyle = '#878787';
+        dateRender.font = 'normal 48px "Geist Mono", monospace';
+        dateRender.textAlign = "right";
+        dateRender.textBaseline = "middle";
+
+        const dateTextX = (CANVAS_SIZE / 2) - 55;
+        const dateTextY = CANVAS_SIZE - 1170;
+        dateRender.fillText(date.toUpperCase(), dateTextX, dateTextY);
+      }
 
       // Create cropped export canvas (excludes bottom 334px)
       const exportCanvas = document.createElement("canvas");
