@@ -215,8 +215,9 @@ const links = [
 
 The lanyard uses base texture images located in the public folder:
 
-- `/card-base-dark.png` - Dark variant background
-- `/card-base-light.png` - Light variant background
+- `/card.glb` - Lanyard 3D model, it includes the default card texture (dark) without customization
+- `/card-base-dark.png` - Dark variant card texture
+- `/card-base-light.png` - Light variant card texture
 
 ### Using the Existing Textures
 
@@ -227,21 +228,26 @@ The current textures include the "Prompt to Production" branding. To customize f
 
 ### Creating Your Own Textures
 
-<!-- 
-TODO: Add your custom texture creation guide here
+Follow these steps if you want to create your own textures:
+1. Create your template using any design tool (Figma, Photoshop, etc)
+2. The layout has to be 1:1 aspect ratio (square)
+3. Consider safe zones for dynamic text placement (see attached figma file as an example of safe zones)
+4. Color considerations for dark/light variants (or more if you decide to extend the initial template)
+5. You need to modify the 3D texture (`card.blg`) as well so it renders the default texture on the initial load
 
-Options to consider:
-1. Design requirements (1376x1376px recommended)
-2. Design tools (Figma, Photoshop, etc.)
-3. Template files location (if providing)
-4. Safe zones for dynamic text placement
-5. Color considerations for dark/light variants
+### How to edit `card.glb` (3D model) file
 
-Example section:
+1. Go to [this page](https://modelviewer.dev/editor/), drag and drop the `card.glb` file to preview the model
+2. Click on the palette icon tab, and under the **texture** option, load your texture image
+![Modify texture example](/public/modify-texture.png)
+3. Go back to the initial tab, and click **Download scene**
+![Export texture example](/public/export-texture.png)
+4. It'll download a zip file with all your model files. You just need to drag and drop the `card.glb` file and replace it into your `/public` folder.
+![Exported folder with texture file](/public/folder-texture.png)
 
 ### Texture Specifications
 
-- **Dimensions:** 1376 x 1376 pixels
+- **Dimensions:** 1376 x 1376 pixels (any 1:1 ratio works, the larger the better resolution will have)
 - **Format:** PNG with transparency support
 - **Files to replace:**
   - `/public/card-base-dark.png`
@@ -256,15 +262,7 @@ Example section:
 
 ### Template Files
 
-[Link to Figma template or download]
-
--->
-
-**Note:** If you need help creating custom textures, you can:
-- Use design tools like Figma, Canva, or Photoshop
-- Ensure dimensions are 1376x1376 pixels
-- Save as PNG format
-- Replace the files in the public folder
+- [Figma template with safe zones](https://www.figma.com/design/uQPzmYgpWdI6xvK4qzaT7X/Untitled?node-id=0-1&t=ygsBkAQ4NTxKhiyh-1)
 
 ---
 
