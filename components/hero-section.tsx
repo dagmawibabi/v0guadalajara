@@ -73,17 +73,7 @@ export default function HeroSection() {
                                     asChild
                                     size="lg"
                                     className="px-5 text-base">
-                                    <Link href="#link">
-                                        <span className="text-nowrap">Register Now</span>
-                                    </Link>
-                                </Button>
-                                <Button
-                                    key={2}
-                                    asChild
-                                    size="lg"
-                                    variant="ghost"
-                                    className="px-5 text-base bg-black/30 backdrop-blur-sm hover:bg-black/40">
-                                    <Link href="#link">
+                                    <Link href="https://t.me/dagmawibabi">
                                         <span className="text-nowrap">Contact Host</span>
                                     </Link>
                                 </Button>
