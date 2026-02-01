@@ -22,7 +22,7 @@ export default function HeroSection() {
                         <div className="mx-auto max-w-2xl text-center lg:ml-0 lg:text-left">
                             <div className='mt-8 lg:mt-16'>
                                 <DecryptedText
-                                    text="Thursday February 5th, 2026 - New York City"
+                                    text="Sunday February 1st, 2026 - Addis Ababa, Ethiopia"
                                     animateOn="view"
                                     revealDirection="start"
                                     sequential
@@ -73,17 +73,7 @@ export default function HeroSection() {
                                     asChild
                                     size="lg"
                                     className="px-5 text-base">
-                                    <Link href="#link">
-                                        <span className="text-nowrap">Register Now</span>
-                                    </Link>
-                                </Button>
-                                <Button
-                                    key={2}
-                                    asChild
-                                    size="lg"
-                                    variant="ghost"
-                                    className="px-5 text-base bg-black/30 backdrop-blur-sm hover:bg-black/40">
-                                    <Link href="#link">
+                                    <Link href="https://t.me/dagmawibabi">
                                         <span className="text-nowrap">Contact Host</span>
                                     </Link>
                                 </Button>

@@ -20,7 +20,7 @@ export const HeroHeader = () => {
                                 aria-label="home"
                                 className="flex items-center space-x-2">
                                 <V0Icon size={30} className='text-foreground'/>
-                                <span className='font-mono'>IRL - NYC</span>
+                                <span className='font-mono'>IRL - Addis Ababa</span>
                             </Link>
 
                             <button
@@ -39,8 +39,8 @@ export const HeroHeader = () => {
                                 <Button
                                     asChild
                                     size="sm">
-                                    <Link href="https://meetup-sdk.vercel.com/">
-                                        <span>Host an Event</span>
+                                    <Link href="https://dagmawibabi.com">
+                                        <span>Dagmawi Babi</span>
                                     </Link>
                                 </Button>
                             </div>
